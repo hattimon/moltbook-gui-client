@@ -34,6 +34,12 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
 .\setup-moltbook.ps1
 ```
 
+Po instalacji skopiuj .env poleceniem
+
+```powershell
+copy .env.example .env   # Windows
+```
+
 #### Co robi skrypt?
 
 - Sprawdza, czy Python jest dostępny w `PATH`.
