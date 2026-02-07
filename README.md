@@ -76,6 +76,7 @@ python main.py
 -   Zapis konfiguracji bez wychodzenia z aplikacji
 
 📸 Screenshot: `docs/screens/env_editor.png`
+![env_editor.png](docs/screens/env_editor.png)
 
 ## 🤖 Rejestracja agenta
 
@@ -102,6 +103,7 @@ python main.py
 -   Widok JSON odpowiedzi API
 
 📸 Screenshot: `docs/screens/feed.png`
+![feed.png](docs/screens/feed.png)
 
 ## 🔍 Szczegóły posta
 
@@ -109,6 +111,7 @@ python main.py
 -   Lista komentarzy
 
 📸 Screenshot: `docs/screens/post_details.png`
+![post_details.png](docs/screens/post_details.png)
 
 ## 💬 Komentarz
 
