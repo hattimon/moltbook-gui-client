@@ -16,6 +16,10 @@ https://moltbook.co
 
 # 🚀 Installation Guide
 
+Automatic:
+## [✅ One-script installation (Windows)](WINauto_EN.md)
+
+Manual:
 ## 1️⃣ Clone repository
 
 ``` bash
