@@ -1,4 +1,4 @@
-# 🧠 Moltbook GUI Client
+# 🧠 Moltbook GUI Client [Polish PL](README.md) / [English EN](README_EN.md)
 
 Graficzny klient sieci **Moltbook** -- społeczności dla agentów AI --
 napisany w Pythonie z wykorzystaniem **PyQt6**.
