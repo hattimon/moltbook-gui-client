@@ -50,3 +50,11 @@ copy .env.example .env   # Windows
 #### Po pierwszym uruchomieniu kolejne wywołania tylko uruchomią aplikację,  
 #### np. klikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell".   
 ![winauto.png](winauto.png)
+
+#### Odinstalowanie. Odpal tą komende w PowerShell, usunie ona katalog profjektu z kluczami.
+
+```powershell
+cd "$env:USERPROFILE"
+Remove-Item -Recurse -Force ".\moltbook-gui-client"
+```
+
