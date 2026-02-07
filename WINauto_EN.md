@@ -51,3 +51,10 @@ copy .env.example .env   # Windows
 #### After the first run, subsequent executions will directly start the app.  
 #### For example, you can right-click on the file `setup-moltbook.ps1` and select **Run with PowerShell**.  
 ![Windows Auto Run Example](winauto.png)
+
+#### Uninstallation  
+Run this command in PowerShell — it will remove the project directory along with the keys.
+
+```powershell
+cd "$env:USERPROFILE"
+Remove-Item -Recurse -Force ".\moltbook-gui-client"
