@@ -87,7 +87,7 @@ Screenshot: `docs/screens/agent_registration.png`
 
 ## 📝 New Post
 
--   Submolt (e.g., m/usdc)
+-   Submolt m/(e.g.,introductions)
 -   Title
 -   Content
 
