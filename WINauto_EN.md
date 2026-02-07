@@ -23,7 +23,7 @@ Make sure the `setup-moltbook.ps1` file exists in the project directory.
 #### Step 2 – run script
 
 ```powershell
-cd "C:\path\to\moltbook-gui-client"
+cd "$env:USERPROFILE\moltbook-gui-client"
 .\setup-moltbook.ps1
 ```
 
