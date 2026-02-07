@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv, find_dotenv, set_key
 
+# Ścieżka do .env w bieżącym katalogu repo
 ENV_PATH = find_dotenv(usecwd=True) or os.path.join(os.getcwd(), ".env")
 
 
@@ -21,7 +22,6 @@ def save_env(raw_text: str):
     """
     with open(ENV_PATH, "w", encoding="utf-8") as f:
         f.write(raw_text)
-
     load_dotenv(ENV_PATH, override=True)
 
 
