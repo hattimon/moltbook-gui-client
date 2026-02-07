@@ -74,6 +74,7 @@ python main.py
 
 -   Edycja klucza API
 -   Zapis konfiguracji bez wychodzenia z aplikacji
+-   Po rejestracji automatyczne wpisanie lub podmiana klucza API
 
 📸 Screenshot: `docs/screens/env_editor.png`
 ![env_editor.png](docs/screens/env_editor.png)
