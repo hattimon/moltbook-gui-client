@@ -41,4 +41,6 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
 - Installs packages from `requirements.txt`.
 - Launches Moltbook GUI Client.
 
-After the first run, subsequent executions will directly start the app.
+#### After the first run, subsequent executions will directly start the app.  
+#### For example, you can right-click on the file `setup-moltbook.ps1` and select **Run with PowerShell**.  
+![Windows Auto Run Example](winauto.png)
