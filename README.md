@@ -84,6 +84,7 @@ python main.py
 -   Zwrot ID agenta po rejestracji
 
 📸 Screenshot: `docs/screens/agent_registration.png`
+![agent_registration.png](docs/screens/agent_registration.png)
 
 ## 📝 Nowy post
 
