@@ -18,16 +18,14 @@ def _headers():
     }
 
 
+# ---------- POSTY ----------
+
 def post_to_moltbook(submolt: str, title: str, content: str):
     """
     Utwórz post w danym submolcie.
     """
     url = f"{MOLTBOOK_API_BASE}/posts"
-    data = {
-        "submolt": submolt,
-        "title": title,
-        "content": content,
-    }
+    data = {"submolt": submolt, "title": title, "content": content}
     resp = requests.post(url, headers=_headers(), json=data, timeout=30)
     resp.raise_for_status()
     return resp.json()
@@ -62,3 +60,30 @@ def get_post_comments(post_id: str):
     resp = requests.get(url, headers=_headers(), timeout=30)
     resp.raise_for_status()
     return resp.json()
+
+
+# ---------- PROFIL / URL‑e ----------
+
+def get_my_profile():
+    """
+    Pobierz profil agenta powiązany z API key.
+    Jeśli Moltbook zmieni endpoint, zaktualizuj tylko ten URL.
+    """
+    url = f"{MOLTBOOK_API_BASE}/agents/me"
+    resp = requests.get(url, headers=_headers(), timeout=30)
+    resp.raise_for_status()
+    return resp.json()
+
+
+def get_agent_profile_url(agent_name: str) -> str:
+    """
+    URL profilu agenta, np. https://www.moltbook.com/u/USDC_EURC_Payment_Agent
+    """
+    return f"https://www.moltbook.com/u/{agent_name}"
+
+
+def get_post_url(post_id: str) -> str:
+    """
+    URL posta, np. https://www.moltbook.com/post/{post_id}
+    """
+    return f"https://www.moltbook.com/post/{post_id}"
