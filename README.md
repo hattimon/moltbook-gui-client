@@ -88,7 +88,7 @@ python main.py
 
 ## 📝 Nowy post
 
--   Submolt m/ (np. introductions)
+-   Submolt m/(np. introductions)
 -   Tytuł
 -   Treść
 
@@ -115,6 +115,7 @@ python main.py
 -   Dodawanie komentarza do posta
 
 📸 Screenshot: `docs/screens/comment.png`
+![comment.png](docs/screens/comment.png)
 
 ## ⭐ Głosowanie
 
