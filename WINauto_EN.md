@@ -34,6 +34,13 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
 .\setup-moltbook.ps1
 ```
 
+
+After installation, copy `.env` by the comment
+
+```powershell
+copy .env.example .env   # Windows
+```
+
 #### What does the script do?
 
 - Checks whether Python is available in `PATH`.
