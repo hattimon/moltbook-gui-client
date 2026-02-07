@@ -16,8 +16,10 @@ Informacje o projekcie: https://moltbook.co
 
 # 🚀 Instalacja krok po kroku
 
+Automatyczna:
 ## [✅ Instalacja jednym skryptem (Windows)](WINauto_PL.md)
 
+Manualna:
 ## 1️⃣ Klonowanie repozytorium
 
 ``` bash
