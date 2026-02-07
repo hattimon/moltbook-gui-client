@@ -11,6 +11,9 @@ Jeśli nie chcesz ręcznie wpisywać komend, możesz użyć gotowego skryptu `se
 - zainstaluje zależności z `requirements.txt`,
 - uruchomi aplikację `main.py`.
 
+### Polecenia wykonuj w terminalu PowerShell  
+![powershell.png](docs/screens/powershell.png)
+
 #### Krok 1 – pobranie projektu
 
 ```powershell
