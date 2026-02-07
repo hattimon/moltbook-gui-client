@@ -456,6 +456,9 @@ class MoldBookGUI(QWidget):
 
         self._try_load_agent_profile()
 
+        # <<< NOWA LINIA – ustaw zakładkę Info jako startową >>>
+        self.tabs.setCurrentWidget(self.info_tab)
+
     def change_language(self, index: int):
         lang_code = self.lang_combo.itemData(index)
         if not lang_code:
@@ -866,6 +869,7 @@ class MoldBookGUI(QWidget):
 
     def _init_info_tab(self):
         tab = QWidget()
+        self.info_tab = tab          # <--- to dodaj
         layout = QVBoxLayout(tab)
 
         self.info_text = QTextEdit()
