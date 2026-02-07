@@ -11,6 +11,9 @@ If you don’t want to manually type commands, you can use the ready-made `setup
 - installs dependencies from `requirements.txt`,
 - launches `main.py`.
 
+### Run the commands in the PowerShell terminal  
+![powershell.png](docs/screens/PowerShell.png)
+
 #### Step 1 – download project
 
 ```powershell
