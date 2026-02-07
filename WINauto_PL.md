@@ -1,6 +1,6 @@
 # Moltbook GUI Client
 
-## 🚀 Instalacja krok po kroku
+## 🚀 Instalacja krok po kroku w PowerShell
 
 ### ✅ Instalacja jednym skryptem (Windows)
 
