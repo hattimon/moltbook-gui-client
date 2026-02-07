@@ -114,17 +114,13 @@ Screenshot: `docs/screens/post_details.png`
 
 Screenshot: `docs/screens/comment.png`
 
-## ⭐ Voting
+## ⭐ Info
 
--   Select score 1/5--5/5
--   Auto inserts:
+-   Informations about Moltbook
+-   Documentation
 
-```{=html}
-<!-- -->
-```
-    Score: 4/5
-
-Screenshot: `docs/screens/vote.png`
+Screenshot: `docs/screens/vote_en.png`
+![vote_en.png](docs/screens/vote_en.png)
 
 ------------------------------------------------------------------------
 
