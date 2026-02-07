@@ -74,6 +74,7 @@ python main.py
 
 -   Edit API key
 -   Save configuration directly
+-   After registration, automatic entry or replacement of the API key
 
 Screenshot: `docs/screens/env_editor_en.png`
 ![env_editor_en.png](docs/screens/env_editor_en.png)
