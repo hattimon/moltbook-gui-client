@@ -32,7 +32,6 @@ import env_editor
 DEFAULT_SUBMOLT = "introductions"
 MOLTBOOK_BASE_URL = "https://www.moltbook.com"
 
-
 INFO_TEXT_PL = """### Informacje o Moltbook
 
 Moltbook to sieć społecznościowa zaprojektowana głównie dla agentów AI, ale ludzie też mogą z niej korzystać jako obserwatorzy. Posty są publikowane w submoltach (np. m/general, m/introductions) i mogą mieć komentarze oraz głosy.
@@ -111,7 +110,6 @@ Moltbook is a social network designed mainly for AI agents, but humans can use i
 Whenever something in Moltbook changes, it is best to compare the JSON response with what you see in the browser and follow the official `skill.md` / `heartbeat.md` files.
 """
 
-
 TRANSLATIONS = {
     "pl": {
         "lang_name": "Polski",
@@ -156,7 +154,7 @@ TRANSLATIONS = {
         "details_error": "Błąd pobierania szczegółów",
         "label_comment": "Komentarz:",
         "btn_add_comment": "Dodaj komentarz",
-        "comment_success": "Komentarz dodany.\nID komentarza: {id}\n\nPost:\n{url}\n\nLink do posta został skopiowany do schowka.",
+        "comment_success": "Komentarz dodany.\nID posta: {post_id}\n\nPost:\n{url}\n\nLink do posta został skopiowany do schowka.",
         "comment_success_title": "Sukces",
         "comment_error": "Błąd dodawania komentarza",
         "common_missing_post_id_or_content": "ID posta i treść komentarza są wymagane.",
@@ -228,7 +226,7 @@ TRANSLATIONS = {
         "details_error": "Error loading details",
         "label_comment": "Comment:",
         "btn_add_comment": "Add comment",
-        "comment_success": "Comment added.\nComment ID: {id}\n\nPost:\n{url}\n\nPost URL has been copied to clipboard.",
+        "comment_success": "Comment added.\nPost ID: {post_id}\n\nPost:\n{url}\n\nPost URL has been copied to clipboard.",
         "comment_success_title": "Success",
         "comment_error": "Error adding comment",
         "common_missing_post_id_or_content": "Post ID and comment text are required.",
@@ -298,6 +296,26 @@ def show_json_dialog(parent, text: str, tr: dict):
     btn_copy.clicked.connect(copy_to_clipboard)
     btn_save.clicked.connect(save_to_file)
     btn_ok.clicked.connect(dlg.accept)
+
+    layout.addWidget(editor)
+    layout.addWidget(buttons)
+
+    dlg.exec()
+
+
+def show_text_dialog(parent, title: str, text: str):
+    dlg = QDialog(parent)
+    dlg.setWindowTitle(title)
+    dlg.resize(600, 400)
+
+    layout = QVBoxLayout(dlg)
+
+    editor = QTextEdit()
+    editor.setReadOnly(False)
+    editor.setPlainText(text)
+
+    buttons = QDialogButtonBox(QDialogButtonBox.StandardButton.Ok)
+    buttons.accepted.connect(dlg.accept)
 
     layout.addWidget(editor)
     layout.addWidget(buttons)
@@ -456,7 +474,6 @@ class MoldBookGUI(QWidget):
 
         self._try_load_agent_profile()
 
-        # <<< NOWA LINIA – ustaw zakładkę Info jako startową >>>
         self.tabs.setCurrentWidget(self.info_tab)
 
     def change_language(self, index: int):
@@ -686,7 +703,7 @@ class MoldBookGUI(QWidget):
 
             post_id = resp.get("id")
             if not post_id:
-                QMessageBox.information(
+                show_text_dialog(
                     self,
                     self.tr["post_success_title"],
                     json.dumps(resp, indent=2, ensure_ascii=False),
@@ -694,11 +711,8 @@ class MoldBookGUI(QWidget):
                 return
 
             post_url = moltbook_client.get_post_url(post_id)
-            QMessageBox.information(
-                self,
-                self.tr["post_success_title"],
-                self.tr["post_success_msg"].format(id=post_id, url=post_url),
-            )
+            msg = self.tr["post_success_msg"].format(id=post_id, url=post_url)
+            show_text_dialog(self, self.tr["post_success_title"], msg)
             self._copy_or_open_url(post_url, "copy_or_open_title_post")
 
         except Exception as e:
@@ -853,15 +867,15 @@ class MoldBookGUI(QWidget):
                 raise ValueError(self.tr["common_missing_post_id_or_content"])
 
             resp = vote_client.add_comment(post_id=post_id, content=content)
-            comment_id = resp.get("id", "unknown")
+            # comment_id = resp.get("id", "unknown")  # nie używamy
 
             post_url = moltbook_client.get_post_url(post_id)
 
-            QMessageBox.information(
-                self,
-                self.tr["comment_success_title"],
-                self.tr["comment_success"].format(id=comment_id, url=post_url),
+            msg = self.tr["comment_success"].format(
+                post_id=post_id,
+                url=post_url,
             )
+            show_text_dialog(self, self.tr["comment_success_title"], msg)
             self._copy_or_open_url(post_url, "copy_or_open_title_comment")
 
         except Exception as e:
@@ -869,18 +883,17 @@ class MoldBookGUI(QWidget):
 
     def _init_info_tab(self):
         tab = QWidget()
-        self.info_tab = tab          # <--- to dodaj
+        self.info_tab = tab
         layout = QVBoxLayout(tab)
 
         self.info_text = QTextEdit()
-        self.info_text.setReadOnly(False)  # można zaznaczać i kopiować
+        self.info_text.setReadOnly(False)
         self.info_text.setPlainText(INFO_TEXT_PL if self.current_lang == "pl" else INFO_TEXT_EN)
 
         layout.addWidget(self.info_text)
 
         self.tabs.addTab(tab, self.tr["tab_info"])
 
-    # ------------------------
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
