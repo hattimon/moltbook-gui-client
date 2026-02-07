@@ -630,6 +630,10 @@ class MoldBookGUI(QWidget):
     def create_post(self):
         try:
             submolt = self.post_submolt.text().strip() or DEFAULT_SUBMOLT
+            # jeśli ktoś wpisze "m/xyz", obetnij prefiks:
+            if submolt.startswith("m/"):
+                submolt = submolt[2:]
+
             title = self.post_title.text().strip()
             content = self.post_content.toPlainText().strip()
 
@@ -709,16 +713,24 @@ class MoldBookGUI(QWidget):
 
             data = moltbook_client.list_posts(sort=sort, limit=limit)
 
-            self.feed_list.clear()
+            # zapisz pełny JSON do dolnego pola
             self.feed_raw.setPlainText(json.dumps(data, indent=2, ensure_ascii=False))
 
-            for post in data:
+            # właściwa lista postów jest pod kluczem "posts"
+            posts = data.get("posts", []) if isinstance(data, dict) else data
+
+            self.feed_list.clear()
+
+            for post in posts:
+                if not isinstance(post, dict):
+                    continue
                 title = post.get("title", "(no title)")
                 pid = post.get("id", "")
-                submolt = post.get("submolt", "")
+                submolt = post.get("submolt", {}).get("name") if isinstance(post.get("submolt"), dict) else post.get("submolt", "")
                 item = QListWidgetItem(f"[{submolt}] {title} ({pid})")
                 item.setData(32, pid)
                 self.feed_list.addItem(item)
+
         except Exception as e:
             QMessageBox.critical(self, self.tr["feed_error"], str(e))
 
