@@ -88,7 +88,7 @@ python main.py
 
 ## 📝 Nowy post
 
--   Submolt (np. m/usdc)
+-   Submolt m/ (np. introductions)
 -   Tytuł
 -   Treść
 
