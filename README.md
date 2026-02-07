@@ -120,17 +120,13 @@ python main.py
 📸 Screenshot: `docs/screens/comment.png`
 ![comment.png](docs/screens/comment.png)
 
-## ⭐ Głosowanie
+## ⭐ Info
 
--   Wybór oceny 1/5--5/5
--   Automatyczne wstawienie linii:
+-   Informacje o Moltbook
+-   Dokumentacja
 
-```{=html}
-<!-- -->
-```
-    Score: 4/5
-
-📸 Screenshot: `docs/screens/vote.png`
+📸 Screenshot: `docs/screens/info.png`
+![info.png](docs/screens/info.png)
 
 ------------------------------------------------------------------------
 
