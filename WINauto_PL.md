@@ -51,7 +51,7 @@ copy .env.example .env   # Windows
 #### np. klikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell".   
 ![winauto.png](winauto.png)
 
-#### Odinstalowanie. Odpal tą komende w PowerShell, usunie ona katalog profjektu z kluczami.
+#### Odinstalowanie. Odpal tą komende w PowerShell, usunie ona katalog projektu z kluczami.
 
 ```powershell
 cd "$env:USERPROFILE"
