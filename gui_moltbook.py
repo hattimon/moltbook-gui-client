@@ -33,7 +33,84 @@ DEFAULT_SUBMOLT = "introductions"
 MOLTBOOK_BASE_URL = "https://www.moltbook.com"
 
 
-# ---------- Proste tłumaczenia (PL / EN) ----------
+INFO_TEXT_PL = """### Informacje o Moltbook
+
+Moltbook to sieć społecznościowa zaprojektowana głównie dla agentów AI, ale ludzie też mogą z niej korzystać jako obserwatorzy. Posty są publikowane w submoltach (np. m/general, m/introductions) i mogą mieć komentarze oraz głosy.
+
+**Opóźnienia w pojawianiu się postów**
+
+- Post utworzony przez API może mieć status „pending”.
+- Dopóki trwa weryfikacja, post może nie być widoczny w głównym feedzie, mimo że API zwróciło sukces.
+- Najczęściej po pewnym czasie (minuty, czasem dłużej) post zaczyna być widoczny normalnie w submolcie i na profilu agenta.
+
+**Głosowanie (upvote/downvote)**
+
+- Interfejs webowy Moltbooka pozwala głosować (strzałki w górę/w dół) po zalogowaniu się przez X.com.
+- API dla zewnętrznych agentów jest opisane w plikach `skill.md` i `heartbeat.md` publikowanych przez Moltbook.
+- Ten klient GUI skupia się na postach i komentarzach – nie implementuje bezpośrednio głosowania, dopóki oficjalne endpointy vote nie będą stabilnie udokumentowane.
+
+**Agent API i heartbeat**
+
+- Rejestracja agenta odbywa się przez `POST /api/v1/agents/register`; w odpowiedzi dostajesz `api_key`, `claim_url`, `profile_url` i listę kroków (`setup`).
+- Claim URL służy do powiązania agenta z Twoim kontem (np. przez X.com).
+- Moltbook zaleca skonfigurowanie „heartbeat” – okresowego sprawdzania powiadomień / statusu agenta, zgodnie z instrukcją w `heartbeat.md`.
+
+**Gdzie szukać dokumentacji**
+
+- Dokumentacja dla agentów: `https://www.moltbook.com/skill.md`
+- Heartbeat: `https://www.moltbook.com/heartbeat.md`
+- Dodatkowe pliki opisujące zachowanie skilli mogą być wymienione w sekcji `skill_files` JSON‑a zwracanego przy rejestracji agenta.
+
+**Jak używać tego GUI**
+
+- Zakładka `.env` – edycja pliku `.env` i klucza `MOLTBOOK_API_KEY`.
+- „Rejestracja agenta” – tworzy nowego agenta i pokazuje wszystkie kroki setupu (łącznie z claim URL, profilami i plikami skill).
+- „Nowy post” – tworzenie postów w wybranym submolcie (do API wysyłana jest sama nazwa submoltu, np. `general` zamiast `m/general`).
+- „Feed” i „Szczegóły posta” – przeglądanie postów, szczegółów i komentarzy.
+- „Komentarz” – dodawanie komentarzy do istniejących postów.
+
+W razie wątpliwości co do nowych funkcji Moltbooka, najlepiej porównać odpowiedź JSON z tym, co widzisz w przeglądarce na stronie Moltbook i trzymać się oficjalnych plików `skill.md`/`heartbeat.md`.
+"""
+
+INFO_TEXT_EN = """### Moltbook information
+
+Moltbook is a social network designed mainly for AI agents, but humans can use it as viewers as well. Posts are published into submolts (for example m/general, m/introductions) and can receive comments and votes.
+
+**Why posts sometimes appear with a delay**
+
+- A post created via the API can have a `pending` verification status.
+- While verification is in progress, the post may not show up in the main feed even if the API returned success.
+- Usually, after some time (minutes or longer) the post becomes visible in the target submolt and on the agent profile.
+
+**Voting (upvotes/downvotes)**
+
+- The Moltbook web UI lets you vote using the arrow buttons once you log in via X.com.
+- The API for external agents is documented in the `skill.md` and `heartbeat.md` files published by Moltbook.
+- This GUI focuses on posts and comments and does not implement direct voting until official vote endpoints are clearly documented and stable.
+
+**Agent API and heartbeat**
+
+- Agents are registered using `POST /api/v1/agents/register`; the response includes `api_key`, `claim_url`, `profile_url` and a `setup` section with next steps.
+- The claim URL is used to link the agent to your account (for example via X.com).
+- Moltbook recommends configuring a “heartbeat” – periodic checks of notifications / agent status, according to the instructions in `heartbeat.md`.
+
+**Where to find documentation**
+
+- Agent documentation: `https://www.moltbook.com/skill.md`
+- Heartbeat: `https://www.moltbook.com/heartbeat.md`
+- Additional files describing skill behaviour can be listed in the `skill_files` section of the JSON returned when registering an agent.
+
+**How to use this GUI**
+
+- “.env” tab – edit the `.env` file and the `MOLTBOOK_API_KEY` value.
+- “Agent registration” – create a new agent and see all setup steps (including claim URL, profile URLs and skill files).
+- “New post” – create posts in a chosen submolt (the API receives only the submolt name, for example `general` instead of `m/general`).
+- “Feed” and “Post details” – browse posts, details and comments.
+- “Comment” – add comments to existing posts.
+
+Whenever something in Moltbook changes, it is best to compare the JSON response with what you see in the browser and follow the official `skill.md` / `heartbeat.md` files.
+"""
+
 
 TRANSLATIONS = {
     "pl": {
@@ -45,7 +122,7 @@ TRANSLATIONS = {
         "tab_feed": "Feed",
         "tab_details": "Szczegóły posta",
         "tab_comment": "Komentarz",
-        "tab_vote": "Głosowanie",
+        "tab_info": "Info",
         "label_lang": "Język:",
         "label_env": "Zawartość pliku .env:",
         "btn_env_save": "Zapisz .env",
@@ -56,7 +133,6 @@ TRANSLATIONS = {
         "btn_register": "Zarejestruj agenta",
         "label_agent_info": "Informacje o agencie:",
         "register_success_title": "Sukces rejestracji",
-        "register_success_no_key_title": "Sukces (bez api_key)",
         "register_conflict_title": "Konflikt rejestracji",
         "register_error": "Błąd rejestracji",
         "register_name_required": "Nazwa i opis są wymagane.",
@@ -83,11 +159,6 @@ TRANSLATIONS = {
         "comment_success": "Komentarz dodany.\nID komentarza: {id}\n\nPost:\n{url}\n\nLink do posta został skopiowany do schowka.",
         "comment_success_title": "Sukces",
         "comment_error": "Błąd dodawania komentarza",
-        "label_score": "Ocena:",
-        "btn_vote": "Wyślij głos (komentarz)",
-        "vote_success": "Głos dodany jako komentarz.\nID komentarza: {id}\n\nPost:\n{url}\n\nLink do posta został skopiowany do schowka.",
-        "vote_success_title": "Sukces",
-        "vote_error": "Błąd głosowania",
         "common_missing_post_id_or_content": "ID posta i treść komentarza są wymagane.",
         "common_missing_post_id": "ID posta jest wymagane.",
         "copy_dialog_copy": "Copy",
@@ -98,7 +169,6 @@ TRANSLATIONS = {
         "copy_saved_error": "Błąd zapisu pliku.",
         "copy_or_open_title_post": "Post utworzony",
         "copy_or_open_title_comment": "Komentarz dodany",
-        "copy_or_open_title_vote": "Głos dodany",
         "copy_or_open_question": "Link został skopiowany do schowka:\n{url}\n\nOtworzyć w przeglądarce?",
         "register_steps_title": "Instrukcja rejestracji",
         "register_steps_header": "Agent zarejestrowany. Wykonaj kolejne kroki:",
@@ -124,7 +194,7 @@ TRANSLATIONS = {
         "tab_feed": "Feed",
         "tab_details": "Post details",
         "tab_comment": "Comment",
-        "tab_vote": "Voting",
+        "tab_info": "Info",
         "label_lang": "Language:",
         "label_env": "Contents of .env:",
         "btn_env_save": "Save .env",
@@ -135,7 +205,6 @@ TRANSLATIONS = {
         "btn_register": "Register agent",
         "label_agent_info": "Agent info:",
         "register_success_title": "Registration success",
-        "register_success_no_key_title": "Success (no api_key)",
         "register_conflict_title": "Registration conflict",
         "register_error": "Registration error",
         "register_name_required": "Name and description are required.",
@@ -162,11 +231,6 @@ TRANSLATIONS = {
         "comment_success": "Comment added.\nComment ID: {id}\n\nPost:\n{url}\n\nPost URL has been copied to clipboard.",
         "comment_success_title": "Success",
         "comment_error": "Error adding comment",
-        "label_score": "Score:",
-        "btn_vote": "Send vote (comment)",
-        "vote_success": "Vote added as comment.\nComment ID: {id}\n\nPost:\n{url}\n\nPost URL has been copied to clipboard.",
-        "vote_success_title": "Success",
-        "vote_error": "Error sending vote",
         "common_missing_post_id_or_content": "Post ID and comment text are required.",
         "common_missing_post_id": "Post ID is required.",
         "copy_dialog_copy": "Copy",
@@ -177,7 +241,6 @@ TRANSLATIONS = {
         "copy_saved_error": "Error saving file.",
         "copy_or_open_title_post": "Post created",
         "copy_or_open_title_comment": "Comment added",
-        "copy_or_open_title_vote": "Vote added",
         "copy_or_open_question": "Link has been copied to clipboard:\n{url}\n\nOpen in browser?",
         "register_steps_title": "Registration instructions",
         "register_steps_header": "Agent registered. Follow these steps:",
@@ -196,8 +259,6 @@ TRANSLATIONS = {
     },
 }
 
-
-# ---------- Dialog JSON (małe okno, scroll + Copy + Save) ----------
 
 def show_json_dialog(parent, text: str, tr: dict):
     dlg = QDialog(parent)
@@ -243,8 +304,6 @@ def show_json_dialog(parent, text: str, tr: dict):
 
     dlg.exec()
 
-
-# ---------- Dialog instrukcji rejestracji ----------
 
 class RegistrationStepsDialog(QDialog):
     def __init__(self, parent, data: dict, tr: dict):
@@ -358,8 +417,6 @@ class RegistrationStepsDialog(QDialog):
         layout.addWidget(buttons)
 
 
-# ---------- Główne GUI ----------
-
 class MoldBookGUI(QWidget):
     def __init__(self):
         super().__init__()
@@ -374,7 +431,6 @@ class MoldBookGUI(QWidget):
 
         main_layout = QVBoxLayout(self)
 
-        # Pasek języka
         lang_layout = QHBoxLayout()
         self.lang_label = QLabel(self.tr["label_lang"])
         self.lang_combo = QComboBox()
@@ -396,11 +452,9 @@ class MoldBookGUI(QWidget):
         self._init_feed_tab()
         self._init_post_details_tab()
         self._init_comment_tab()
-        self._init_vote_tab()
+        self._init_info_tab()
 
         self._try_load_agent_profile()
-
-    # ---------- Język ----------
 
     def change_language(self, index: int):
         lang_code = self.lang_combo.itemData(index)
@@ -419,48 +473,37 @@ class MoldBookGUI(QWidget):
         self.tabs.setTabText(3, self.tr["tab_feed"])
         self.tabs.setTabText(4, self.tr["tab_details"])
         self.tabs.setTabText(5, self.tr["tab_comment"])
-        self.tabs.setTabText(6, self.tr["tab_vote"])
+        self.tabs.setTabText(6, self.tr["tab_info"])
 
-        # .env tab
         self.env_label.setText(self.tr["label_env"])
         self.env_save_btn.setText(self.tr["btn_env_save"])
 
-        # register tab
         self.label_agent_name.setText(self.tr["label_agent_name"])
         self.label_agent_desc.setText(self.tr["label_agent_desc"])
         self.register_button.setText(self.tr["btn_register"])
         self.agent_info_title.setText(self.tr["label_agent_info"])
 
-        # post tab
         self.label_submolt.setText(self.tr["label_submolt"])
         self.label_title.setText(self.tr["label_title"])
         self.label_content.setText(self.tr["label_content"])
         self.post_button.setText(self.tr["btn_post"])
 
-        # feed tab
         self.feed_sort_label.setText(self.tr["label_sort"])
         self.feed_limit_label.setText(self.tr["label_limit"])
         self.feed_refresh_btn.setText(self.tr["btn_refresh"])
         self.feed_posts_label.setText(self.tr["label_posts"])
         self.feed_json_label.setText(self.tr["label_json_response"])
 
-        # details tab
         self.details_id_label.setText(self.tr["label_post_id"])
         self.details_load_btn.setText(self.tr["btn_load_details"])
         self.details_post_label.setText(self.tr["label_post_json"])
         self.details_comments_label.setText(self.tr["label_comments_json"])
 
-        # comment tab
         self.comment_id_label.setText(self.tr["label_post_id"])
         self.comment_content_label.setText(self.tr["label_comment"])
         self.comment_button.setText(self.tr["btn_add_comment"])
 
-        # vote tab
-        self.vote_id_label.setText(self.tr["label_post_id"])
-        self.vote_score_label.setText(self.tr["label_score"])
-        self.vote_button.setText(self.tr["btn_vote"])
-
-    # ---------- Profil agenta ----------
+        self.info_text.setPlainText(INFO_TEXT_PL if self.current_lang == "pl" else INFO_TEXT_EN)
 
     def _try_load_agent_profile(self):
         try:
@@ -476,8 +519,6 @@ class MoldBookGUI(QWidget):
             self.agent_info_value.setText(info)
         except Exception:
             pass
-
-    # ---------- Zakładka .env ----------
 
     def _init_env_tab(self):
         tab = QWidget()
@@ -507,8 +548,6 @@ class MoldBookGUI(QWidget):
             self._try_load_agent_profile()
         except Exception as e:
             QMessageBox.critical(self, self.tr["msg_env_error"], str(e))
-
-    # ---------- Zakładka rejestracji ----------
 
     def _init_register_tab(self):
         tab = QWidget()
@@ -589,8 +628,6 @@ class MoldBookGUI(QWidget):
         except Exception as e:
             QMessageBox.critical(self, self.tr["register_error"], str(e))
 
-    # ---------- Zakładka nowego posta ----------
-
     def _init_post_tab(self):
         tab = QWidget()
         form = QFormLayout(tab)
@@ -630,10 +667,8 @@ class MoldBookGUI(QWidget):
     def create_post(self):
         try:
             submolt = self.post_submolt.text().strip() or DEFAULT_SUBMOLT
-            # jeśli ktoś wpisze "m/xyz", obetnij prefiks:
             if submolt.startswith("m/"):
                 submolt = submolt[2:]
-
             title = self.post_title.text().strip()
             content = self.post_content.toPlainText().strip()
 
@@ -665,8 +700,6 @@ class MoldBookGUI(QWidget):
 
         except Exception as e:
             QMessageBox.critical(self, self.tr["post_error"], str(e))
-
-    # ---------- Zakładka feed ----------
 
     def _init_feed_tab(self):
         tab = QWidget()
@@ -713,10 +746,8 @@ class MoldBookGUI(QWidget):
 
             data = moltbook_client.list_posts(sort=sort, limit=limit)
 
-            # zapisz pełny JSON do dolnego pola
             self.feed_raw.setPlainText(json.dumps(data, indent=2, ensure_ascii=False))
 
-            # właściwa lista postów jest pod kluczem "posts"
             posts = data.get("posts", []) if isinstance(data, dict) else data
 
             self.feed_list.clear()
@@ -726,11 +757,14 @@ class MoldBookGUI(QWidget):
                     continue
                 title = post.get("title", "(no title)")
                 pid = post.get("id", "")
-                submolt = post.get("submolt", {}).get("name") if isinstance(post.get("submolt"), dict) else post.get("submolt", "")
+                sm = post.get("submolt")
+                if isinstance(sm, dict):
+                    submolt = sm.get("name", "")
+                else:
+                    submolt = sm or ""
                 item = QListWidgetItem(f"[{submolt}] {title} ({pid})")
                 item.setData(32, pid)
                 self.feed_list.addItem(item)
-
         except Exception as e:
             QMessageBox.critical(self, self.tr["feed_error"], str(e))
 
@@ -740,8 +774,6 @@ class MoldBookGUI(QWidget):
             self.post_details_id.setText(pid)
             self.tabs.setCurrentWidget(self.post_details_tab)
             self.load_post_details()
-
-    # ---------- Zakładka szczegółów ----------
 
     def _init_post_details_tab(self):
         tab = QWidget()
@@ -791,8 +823,6 @@ class MoldBookGUI(QWidget):
         except Exception as e:
             QMessageBox.critical(self, self.tr["details_error"], str(e))
 
-    # ---------- Zakładka komentarza ----------
-
     def _init_comment_tab(self):
         tab = QWidget()
         form = QFormLayout(tab)
@@ -834,67 +864,19 @@ class MoldBookGUI(QWidget):
         except Exception as e:
             QMessageBox.critical(self, self.tr["comment_error"], str(e))
 
-    # ---------- Zakładka głosowania ----------
-
-    def _init_vote_tab(self):
+    def _init_info_tab(self):
         tab = QWidget()
-        form = QFormLayout(tab)
+        layout = QVBoxLayout(tab)
 
-        self.vote_id_label = QLabel(self.tr["label_post_id"])
-        self.vote_post_id = QLineEdit()
+        self.info_text = QTextEdit()
+        self.info_text.setReadOnly(False)  # można zaznaczać i kopiować
+        self.info_text.setPlainText(INFO_TEXT_PL if self.current_lang == "pl" else INFO_TEXT_EN)
 
-        self.vote_score_label = QLabel(self.tr["label_score"])
-        self.vote_score = QComboBox()
-        self.vote_score.addItems(["1/5", "2/5", "3/5", "4/5", "5/5"])
+        layout.addWidget(self.info_text)
 
-        self.vote_comment = QTextEdit()
-        self.vote_comment.setPlainText("Vote\n\nScore: 3/5\n\nFeedback:\n- ...")
+        self.tabs.addTab(tab, self.tr["tab_info"])
 
-        form.addRow(self.vote_id_label, self.vote_post_id)
-        form.addRow(self.vote_score_label, self.vote_score)
-        form.addRow(QLabel(self.tr["label_comment"]), self.vote_comment)
-
-        self.vote_button = QPushButton(self.tr["btn_vote"])
-        self.vote_button.clicked.connect(self.vote_post)
-        form.addRow(self.vote_button)
-
-        self.tabs.addTab(tab, self.tr["tab_vote"])
-
-    def vote_post(self):
-        try:
-            post_id = self.vote_post_id.text().strip()
-            score = self.vote_score.currentText()
-            base_comment = self.vote_comment.toPlainText().strip()
-
-            if not post_id or not base_comment:
-                raise ValueError(self.tr["common_missing_post_id_or_content"])
-
-            content = base_comment
-            if "Score:" in base_comment:
-                lines = base_comment.splitlines()
-                new_lines = []
-                for line in lines:
-                    if line.strip().startswith("Score:"):
-                        new_lines.append(f"Score: {score}")
-                    else:
-                        new_lines.append(line)
-                content = "\n".join(new_lines)
-
-            resp = vote_client.add_comment(post_id=post_id, content=content)
-            comment_id = resp.get("id", "unknown")
-
-            post_url = moltbook_client.get_post_url(post_id)
-
-            QMessageBox.information(
-                self,
-                self.tr["vote_success_title"],
-                self.tr["vote_success"].format(id=comment_id, url=post_url),
-            )
-            self._copy_or_open_url(post_url, "copy_or_open_title_vote")
-
-        except Exception as e:
-            QMessageBox.critical(self, self.tr["vote_error"], str(e))
-
+    # ------------------------
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
