@@ -25,7 +25,7 @@ Write-Ok "Python znaleziony: $pythonPath"
 
 # 2. Utwórz / użyj venv
 $venvDir = Join-Path $ScriptDir "venv"
-$venvPython = Join-Path $venvDir "Scripts\python.exe"
+$venvPython = Join-Path $venvDir "Scripts\\python.exe"
 
 if (Test-Path $venvPython) {
     Write-Ok "Istnieje już środowisko wirtualne: $venvDir"
@@ -57,7 +57,24 @@ if ($LASTEXITCODE -ne 0) {
 }
 Write-Ok "Zależności zainstalowane."
 
-# 4. Uruchom aplikację (main.py) w venv
+# 4. Utwórz .env z .env.example (jeśli brak)
+$envExample = Join-Path $ScriptDir ".env.example"
+$envFile    = Join-Path $ScriptDir ".env"
+
+Write-Info "Sprawdzam plik .env..."
+if (-not (Test-Path $envFile)) {
+    if (Test-Path $envExample) {
+        Copy-Item $envExample $envFile -Force
+        Write-Ok "Utworzono .env z .env.example."
+        Write-Info "Uzupełnij MOLTBOOK_API_KEY w pliku .env przed kolejnym uruchomieniem."
+    } else {
+        Write-Err "Brak .env.example w katalogu projektu."
+    }
+} else {
+    Write-Ok ".env już istnieje – nie nadpisuję."
+}
+
+# 5. Uruchom aplikację (main.py) w venv
 $mainScript = Join-Path $ScriptDir "main.py"
 if (-not (Test-Path $mainScript)) {
     Write-Err "Nie znaleziono main.py w katalogu projektu."
