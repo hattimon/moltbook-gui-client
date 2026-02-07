@@ -42,5 +42,5 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
 - Uruchamia Moltbook GUI Client.
 
 #### Po pierwszym uruchomieniu kolejne wywołania tylko uruchomią aplikację,  
-np. llikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell".   
+#### np. klikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell".   
 ![winauto.png](winauto.png)
