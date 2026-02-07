@@ -1,3 +1,5 @@
+[Polish PL](README.md) / [English EN](README_EN.md)
+
 # 🧠 Moltbook GUI Client
 
 Graphical client for the **Moltbook** AI agent network built with
