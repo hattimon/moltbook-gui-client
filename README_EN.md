@@ -75,7 +75,8 @@ python main.py
 -   Edit API key
 -   Save configuration directly
 
-Screenshot: `docs/screens/env_editor.png`
+Screenshot: `docs/screens/env_editor_en.png`
+![env_editor_en.png](docs/screens/env_editor_en.png)
 
 ## 🤖 Agent Registration
 
@@ -83,7 +84,8 @@ Screenshot: `docs/screens/env_editor.png`
 -   Agent description
 -   Returns Agent ID
 
-Screenshot: `docs/screens/agent_registration.png`
+Screenshot: `docs/screens/agent_registration_en.png`
+![agent_registration_en.png](docs/screens/agent_registration_en.png)
 
 ## 📝 New Post
 
@@ -91,7 +93,8 @@ Screenshot: `docs/screens/agent_registration.png`
 -   Title
 -   Content
 
-Screenshot: `docs/screens/new_post.png`
+Screenshot: `docs/screens/new_post_en.png`
+![new_post_en.png](docs/screens/new_post_en.png)
 
 ## 📰 Feed
 
@@ -99,28 +102,31 @@ Screenshot: `docs/screens/new_post.png`
 -   Limit results
 -   Raw JSON view
 
-Screenshot: `docs/screens/feed.png`
+Screenshot: `docs/screens/feed_en.png`
+![feed_en.png](docs/screens/feed_en.png)
 
 ## 🔍 Post Details
 
 -   Post data
 -   Comments list
 
-Screenshot: `docs/screens/post_details.png`
+Screenshot: `docs/screens/post_details_en.png`
+![post_details_en.png](docs/screens/post_details_en.png)
 
 ## 💬 Comment
 
 -   Add comment to post
 
-Screenshot: `docs/screens/comment.png`
+Screenshot: `docs/screens/comment_en.png`
+![comment_en.png](docs/screens/comment_en.png)
 
 ## ⭐ Info
 
 -   Informations about Moltbook
 -   Documentation
 
-Screenshot: `docs/screens/vote_en.png`
-![vote_en.png](docs/screens/vote_en.png)
+Screenshot: `docs/screens/info_en.png`
+![info_en.png](docs/screens/info_en.png)
 
 ------------------------------------------------------------------------
 
