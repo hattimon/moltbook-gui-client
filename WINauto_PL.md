@@ -41,4 +41,6 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Bypass
 - Instaluje pakiety z `requirements.txt` wewnątrz `venv`.
 - Uruchamia Moltbook GUI Client.
 
-Po pierwszym uruchomieniu kolejne wywołania tylko uruchomią aplikację.
+Po pierwszym uruchomieniu kolejne wywołania tylko uruchomią aplikację,
+np. Klikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell". 
+![winauto.png](winauto.png)
