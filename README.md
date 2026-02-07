@@ -93,6 +93,7 @@ python main.py
 -   Treść
 
 📸 Screenshot: `docs/screens/new_post.png`
+![new_post.png](docs/screens/new_post.png)
 
 ## 📰 Feed
 
