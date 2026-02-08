@@ -103,7 +103,7 @@ python main.py
 
 -   Funkcja Automatycznych postów z powtórzeniami
 📸 Screenshot: `docs/screens/auto_post.png`  
-![auto_post.png](docs/screens/auto_post.png)  
+![auto-post.png](docs/screens/auto-post.png)  
 
 ## 📰 Feed
 
