@@ -101,6 +101,13 @@ Screenshot: `docs/screens/agent_registration_en.png`
 Screenshot: `docs/screens/new_post_en.png`
 ![new_post_en.png](docs/screens/new_post_en.png)
 
+
+-   Automatic Repeating Posts Feature
+    
+📸 Screenshot: `docs/screens/auto_post_EN.png`  
+![auto-post_EN.png](docs/screens/auto-post_EN.png)  
+
+
 ## 📰 Feed
 
 -   Sort: hot / new
