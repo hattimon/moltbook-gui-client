@@ -1,7 +1,9 @@
 import sys
 import json
 import webbrowser
+from datetime import datetime, timedelta
 
+from PyQt6.QtCore import QTimer
 from PyQt6.QtWidgets import (
     QApplication,
     QWidget,
@@ -20,6 +22,8 @@ from PyQt6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
     QFileDialog,
+    QCheckBox,
+    QSpinBox,
 )
 from PyQt6.QtGui import QGuiApplication
 
@@ -444,6 +448,14 @@ class MoldBookGUI(QWidget):
         self.current_agent_name = None
         self.current_agent_profile_url = None
 
+        # --- auto-posty ---
+        self.scheduled_posts = []
+        self.scheduler_timer = QTimer(self)
+        self.scheduler_timer.setInterval(60_000)  # 60 s
+        self.scheduler_timer.timeout.connect(self._process_scheduled_posts)
+        self.scheduler_timer.start()
+        # -------------------
+
         self.setWindowTitle(self.tr["window_title"])
         self.resize(950, 650)
 
@@ -667,6 +679,25 @@ class MoldBookGUI(QWidget):
         form.addRow(self.label_title, self.post_title)
         form.addRow(self.label_content, self.post_content)
 
+        # --- opcje auto-postów ---
+        self.post_auto_checkbox = QCheckBox("Automatyczne posty")
+        self.post_auto_checkbox.setChecked(False)
+
+        self.post_auto_retries = QSpinBox()
+        self.post_auto_retries.setMinimum(1)
+        self.post_auto_retries.setMaximum(1000)
+        self.post_auto_retries.setValue(5)
+
+        self.post_auto_interval = QSpinBox()
+        self.post_auto_interval.setMinimum(1)
+        self.post_auto_interval.setMaximum(60 * 24)
+        self.post_auto_interval.setValue(5)
+
+        form.addRow(self.post_auto_checkbox, QLabel(""))
+        form.addRow(QLabel("Ilość powtórzeń:"), self.post_auto_retries)
+        form.addRow(QLabel("Co ile minut:"), self.post_auto_interval)
+        # --------------------------
+
         self.post_button = QPushButton(self.tr["btn_post"])
         self.post_button.clicked.connect(self.create_post)
         form.addRow(self.post_button)
@@ -695,28 +726,85 @@ class MoldBookGUI(QWidget):
             if not title or not content:
                 raise ValueError(self.tr["label_title"] + " / " + self.tr["label_content"])
 
-            resp = moltbook_client.post_to_moltbook(
-                submolt=submolt,
-                title=title,
-                content=content,
-            )
-
-            post_id = resp.get("id")
-            if not post_id:
-                show_text_dialog(
-                    self,
-                    self.tr["post_success_title"],
-                    json.dumps(resp, indent=2, ensure_ascii=False),
+            # brak auto-postów -> stare zachowanie
+            if not self.post_auto_checkbox.isChecked():
+                resp = moltbook_client.post_to_moltbook(
+                    submolt=submolt,
+                    title=title,
+                    content=content,
                 )
+
+                post_id = resp.get("id")
+                if not post_id:
+                    show_text_dialog(
+                        self,
+                        self.tr["post_success_title"],
+                        json.dumps(resp, indent=2, ensure_ascii=False),
+                    )
+                    return
+
+                post_url = moltbook_client.get_post_url(post_id)
+                msg = self.tr["post_success_msg"].format(id=post_id, url=post_url)
+                show_text_dialog(self, self.tr["post_success_title"], msg)
+                self._copy_or_open_url(post_url, "copy_or_open_title_post")
                 return
 
-            post_url = moltbook_client.get_post_url(post_id)
-            msg = self.tr["post_success_msg"].format(id=post_id, url=post_url)
-            show_text_dialog(self, self.tr["post_success_title"], msg)
-            self._copy_or_open_url(post_url, "copy_or_open_title_post")
+            # --- tryb automatycznych postów ---
+            retries = int(self.post_auto_retries.value())
+            interval_min = int(self.post_auto_interval.value())
+
+            task = {
+                "submolt": submolt,
+                "title": title,
+                "content": content,
+                "remaining": retries,
+                "interval_min": interval_min,
+                "next_run": datetime.utcnow(),
+            }
+            self.scheduled_posts.append(task)
+
+            QMessageBox.information(
+                self,
+                self.tr["post_success_title"],
+                f"Zaplanowano automatyczne posty.\n"
+                f"Ilość powtórzeń: {retries}\n"
+                f"Co {interval_min} minut.\n"
+                f"Aplikacja będzie próbowała w tle.",
+            )
 
         except Exception as e:
             QMessageBox.critical(self, self.tr["post_error"], str(e))
+
+    def _process_scheduled_posts(self):
+        if not self.scheduled_posts:
+            return
+
+        now = datetime.utcnow()
+        still_pending = []
+
+        for task in self.scheduled_posts:
+            if task["next_run"] > now:
+                still_pending.append(task)
+                continue
+
+            try:
+                resp = moltbook_client.post_to_moltbook(
+                    submolt=task["submolt"],
+                    title=task["title"],
+                    content=task["content"],
+                )
+                post_id = resp.get("id")
+                task["remaining"] -= 1
+                print(f"[auto-post] OK id={post_id} remaining={task['remaining']}")
+            except Exception as e:
+                # ignorujemy błędy (rate limit, timeout, itp.)
+                print(f"[auto-post] error: {e}")
+
+            if task["remaining"] > 0:
+                task["next_run"] = now + timedelta(minutes=task["interval_min"])
+                still_pending.append(task)
+
+        self.scheduled_posts = still_pending
 
     def _init_feed_tab(self):
         tab = QWidget()
