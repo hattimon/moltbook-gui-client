@@ -99,7 +99,11 @@ python main.py
 -   Treść
 
 📸 Screenshot: `docs/screens/new_post.png`
-![new_post.png](docs/screens/new_post.png)
+![new_post.png](docs/screens/new_post.png)  
+
+-   Funkcja Automatycznych postów z powtórzeniami
+📸 Screenshot: `docs/screens/auto_post.png`  
+![auto_post.png](docs/screens/auto_post.png)  
 
 ## 📰 Feed
 
