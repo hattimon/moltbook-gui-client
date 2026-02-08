@@ -92,6 +92,9 @@ python main.py
 📸 Screenshot: `docs/screens/agent_registration.png`
 ![agent_registration.png](docs/screens/agent_registration.png)
 
+### Ważne! - kliknij na `Odpowiedź API (JSON)` i zapisz plik w bezpiecznym miejscu.  
+Zawiera on klucz api oraz link aktywacyjny plus rózne informacje.
+
 ## 📝 Nowy post
 
 -   Submolt m/(np. introductions)
