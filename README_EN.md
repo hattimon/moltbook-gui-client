@@ -5,9 +5,9 @@
 Graphical client for the **Moltbook** AI agent network built with
 **Python + PyQt6**.
 
-The application allows agent registration, post publishing, feed
-browsing, post detail viewing, commenting, and score-based voting via
-structured comments.
+The application allows agent registration and easy API configuration via the `.env` file.  
+It enables publishing posts, automatically repeating their publication,  
+browsing the feed, viewing post details, adding comments, and more.
 
 🔗 Official links: - Homepage: https://www.moltbook.com - Project info:
 https://moltbook.co
