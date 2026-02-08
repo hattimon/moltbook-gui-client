@@ -12,7 +12,7 @@ Jeśli nie chcesz ręcznie wpisywać komend, możesz użyć gotowego skryptu `se
 - uruchomi aplikację `main.py`.
 
 ### Polecenia wykonuj w terminalu PowerShell  
-![powershell.png](docs/screens/PowerShell.png)
+![PowerShell.png](docs/screens/PowerShell.png)
 
 #### Krok 1 – pobranie projektu
 
@@ -52,7 +52,7 @@ copy .env.example .env   # Windows
 
 #### Po pierwszym uruchomieniu kolejne wywołania tylko uruchomią aplikację,  
 #### np. klikając prawy przycisk myszy na pliku "setup-moltbook.ps1" i wybierając "Run with PowerShell".   
-![winauto.png](winauto.png)
+![winauto.png](docs/screens/winauto.png)
 
 #### Odinstalowanie.  
 Odpal tą komende w PowerShell, usunie ona katalog projektu z kluczami.
