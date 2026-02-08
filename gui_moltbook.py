@@ -186,6 +186,13 @@ TRANSLATIONS = {
         "register_steps_btn_open_profile": "Otwórz profil",
         "register_steps_btn_copy_profile": "Kopiuj link profilu",
         "register_steps_btn_close": "Zamknij",
+        # auto-post UI
+        "auto_label_enable": "Automatyczne posty",
+        "auto_label_retries": "Ilość powtórzeń:",
+        "auto_label_interval": "Co ile minut:",
+        "auto_btn_stop": "Zatrzymaj automatyczne posty",
+        "auto_info_scheduled": "Zaplanowano automatyczne posty.\nIlość powtórzeń: {retries}\nCo {interval} minut.\nAplikacja będzie próbowała w tle.",
+        "auto_info_stopped": "Wszystkie zaplanowane automatyczne posty zostały zatrzymane.",
     },
     "en": {
         "lang_name": "English",
@@ -258,6 +265,13 @@ TRANSLATIONS = {
         "register_steps_btn_open_profile": "Open profile",
         "register_steps_btn_copy_profile": "Copy profile link",
         "register_steps_btn_close": "Close",
+        # auto-post UI
+        "auto_label_enable": "Automatic posts",
+        "auto_label_retries": "Number of repeats:",
+        "auto_label_interval": "Interval (minutes):",
+        "auto_btn_stop": "Stop automatic posts",
+        "auto_info_scheduled": "Automatic posts scheduled.\nRepeats: {retries}\nEvery {interval} minutes.\nThe application will keep trying in the background.",
+        "auto_info_stopped": "All scheduled automatic posts have been stopped.",
     },
 }
 
@@ -448,13 +462,12 @@ class MoldBookGUI(QWidget):
         self.current_agent_name = None
         self.current_agent_profile_url = None
 
-        # --- auto-posty ---
+        # auto-post state
         self.scheduled_posts = []
         self.scheduler_timer = QTimer(self)
-        self.scheduler_timer.setInterval(60_000)  # 60 s
+        self.scheduler_timer.setInterval(60_000)
         self.scheduler_timer.timeout.connect(self._process_scheduled_posts)
         self.scheduler_timer.start()
-        # -------------------
 
         self.setWindowTitle(self.tr["window_title"])
         self.resize(950, 650)
@@ -519,6 +532,12 @@ class MoldBookGUI(QWidget):
         self.label_title.setText(self.tr["label_title"])
         self.label_content.setText(self.tr["label_content"])
         self.post_button.setText(self.tr["btn_post"])
+
+        # auto-post labels
+        self.post_auto_checkbox.setText(self.tr["auto_label_enable"])
+        self.post_auto_label_retries.setText(self.tr["auto_label_retries"])
+        self.post_auto_label_interval.setText(self.tr["auto_label_interval"])
+        self.post_auto_stop_btn.setText(self.tr["auto_btn_stop"])
 
         self.feed_sort_label.setText(self.tr["label_sort"])
         self.feed_limit_label.setText(self.tr["label_limit"])
@@ -679,30 +698,39 @@ class MoldBookGUI(QWidget):
         form.addRow(self.label_title, self.post_title)
         form.addRow(self.label_content, self.post_content)
 
-        # --- opcje auto-postów ---
-        self.post_auto_checkbox = QCheckBox("Automatyczne posty")
+        # auto-post options
+        self.post_auto_checkbox = QCheckBox(self.tr["auto_label_enable"])
         self.post_auto_checkbox.setChecked(False)
 
+        self.post_auto_label_retries = QLabel(self.tr["auto_label_retries"])
         self.post_auto_retries = QSpinBox()
         self.post_auto_retries.setMinimum(1)
         self.post_auto_retries.setMaximum(1000)
         self.post_auto_retries.setValue(5)
 
+        self.post_auto_label_interval = QLabel(self.tr["auto_label_interval"])
         self.post_auto_interval = QSpinBox()
         self.post_auto_interval.setMinimum(1)
         self.post_auto_interval.setMaximum(60 * 24)
         self.post_auto_interval.setValue(5)
 
+        self.post_auto_stop_btn = QPushButton(self.tr["auto_btn_stop"])
+        self.post_auto_stop_btn.clicked.connect(self.stop_auto_posts)
+
         form.addRow(self.post_auto_checkbox, QLabel(""))
-        form.addRow(QLabel("Ilość powtórzeń:"), self.post_auto_retries)
-        form.addRow(QLabel("Co ile minut:"), self.post_auto_interval)
-        # --------------------------
+        form.addRow(self.post_auto_label_retries, self.post_auto_retries)
+        form.addRow(self.post_auto_label_interval, self.post_auto_interval)
+        form.addRow(self.post_auto_stop_btn)
 
         self.post_button = QPushButton(self.tr["btn_post"])
         self.post_button.clicked.connect(self.create_post)
         form.addRow(self.post_button)
 
         self.tabs.addTab(tab, self.tr["tab_post"])
+
+    def stop_auto_posts(self):
+        self.scheduled_posts = []
+        QMessageBox.information(self, self.tr["post_success_title"], self.tr["auto_info_stopped"])
 
     def _copy_or_open_url(self, url: str, title_key: str):
         QGuiApplication.clipboard().setText(url)
@@ -726,7 +754,6 @@ class MoldBookGUI(QWidget):
             if not title or not content:
                 raise ValueError(self.tr["label_title"] + " / " + self.tr["label_content"])
 
-            # brak auto-postów -> stare zachowanie
             if not self.post_auto_checkbox.isChecked():
                 resp = moltbook_client.post_to_moltbook(
                     submolt=submolt,
@@ -749,7 +776,7 @@ class MoldBookGUI(QWidget):
                 self._copy_or_open_url(post_url, "copy_or_open_title_post")
                 return
 
-            # --- tryb automatycznych postów ---
+            # auto-post mode
             retries = int(self.post_auto_retries.value())
             interval_min = int(self.post_auto_interval.value())
 
@@ -766,10 +793,7 @@ class MoldBookGUI(QWidget):
             QMessageBox.information(
                 self,
                 self.tr["post_success_title"],
-                f"Zaplanowano automatyczne posty.\n"
-                f"Ilość powtórzeń: {retries}\n"
-                f"Co {interval_min} minut.\n"
-                f"Aplikacja będzie próbowała w tle.",
+                self.tr["auto_info_scheduled"].format(retries=retries, interval=interval_min),
             )
 
         except Exception as e:
@@ -797,7 +821,6 @@ class MoldBookGUI(QWidget):
                 task["remaining"] -= 1
                 print(f"[auto-post] OK id={post_id} remaining={task['remaining']}")
             except Exception as e:
-                # ignorujemy błędy (rate limit, timeout, itp.)
                 print(f"[auto-post] error: {e}")
 
             if task["remaining"] > 0:
@@ -955,8 +978,6 @@ class MoldBookGUI(QWidget):
                 raise ValueError(self.tr["common_missing_post_id_or_content"])
 
             resp = vote_client.add_comment(post_id=post_id, content=content)
-            # comment_id = resp.get("id", "unknown")  # nie używamy
-
             post_url = moltbook_client.get_post_url(post_id)
 
             msg = self.tr["comment_success"].format(
