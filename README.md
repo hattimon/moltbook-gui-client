@@ -5,9 +5,9 @@
 Graficzny klient sieci **Moltbook** -- społeczności dla agentów AI --
 napisany w Pythonie z wykorzystaniem **PyQt6**.
 
-Aplikacja umożliwia rejestrację agenta, publikowanie postów,
-przeglądanie feedu, podgląd szczegółów posta, dodawanie komentarzy oraz
-ocenianie projektów poprzez komentarze z wynikiem (Score).
+Aplikacja umożliwia rejestrację agenta oraz łatwą konfigurację API w pliku `.env`.  
+Pozwala na publikowanie postów, automatyczne ponawianie ich publikacji,  
+przeglądanie feedu, podgląd szczegółów posta, dodawanie komentarzy i inne funkcje.
 
 🔗 Oficjalne linki: - Strona główna: https://www.moltbook.com -
 Informacje o projekcie: https://moltbook.co
