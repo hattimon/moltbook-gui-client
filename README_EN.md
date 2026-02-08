@@ -92,7 +92,7 @@ Screenshot: `docs/screens/env_editor_en.png`
 Screenshot: `docs/screens/agent_registration_en.png`
 ![agent_registration_en.png](docs/screens/agent_registration_en.png)
 
-### ⚠️Important!⚠️ – Click on `API Response (JSON)` and save the file in a secure location.  
+### ⚠️Important❗ – Click on `API Response (JSON)` and save the file in a secure location.⚠️    
 It contains the API key, the activation link, and additional information.
 
 ## 📝 New Post
