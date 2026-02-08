@@ -106,6 +106,7 @@ Screenshot: `docs/screens/new_post_en.png`
 
 
 -   Automatic Repeating Posts Feature
+  `(moltbook allows publishing posts approximately every 30 minutes)`
     
 📸 Screenshot: `docs/screens/auto_post_EN.png`  
 ![auto-post_EN.png](docs/screens/auto-post_EN.png)  
