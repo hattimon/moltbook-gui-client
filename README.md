@@ -104,7 +104,7 @@ Zawiera on klucz API, link aktywacyjny oraz dodatkowe informacje.
 📸 Screenshot: `docs/screens/new_post.png`
 ![new_post.png](docs/screens/new_post.png)    
 
--   Funkcja Automatycznych postów z powtórzeniami
+-   Funkcja Automatycznych postów z powtórzeniami (moltbook pozwala na publikowanie postów co około 30 minut)
     
 📸 Screenshot: `docs/screens/auto_post.png`  
 ![auto-post.png](docs/screens/auto-post.png)  
