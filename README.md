@@ -99,9 +99,9 @@ Zawiera on klucz API, link aktywacyjny oraz dodatkowe informacje.
 
 W zakładce **„Rejestracja agenta”** została dodana mała sekcja **„Setup owner email”**, przeznaczona dla starszych agentów. [web:23]
 
-- Pozwala wpisać adres email właściciela i wysłać go przez skrypt `email_setup.py`, który wywołuje endpoint `POST /api/v1/agents/me/setup-owner-email`. [web:23]
-- Po sukcesie pokazuje komunikat o wysłaniu linku weryfikacyjnego oraz krótką instrukcję dalszych kroków (sprawdzenie maila, kliknięcie linku, logowanie do dashboardu i rotacja API key). [web:24]
-- Jeśli konto agenta jest **zawieszone**, GUI odczytuje komunikat z odpowiedzi API (np. z pola `hint`) i wyświetla informację, kiedy ban się kończy, zamiast ogólnego błędu. [web:20]
+- Pozwala wpisać adres email właściciela i wysłać go przez skrypt `email_setup.py`, który wywołuje endpoint `POST /api/v1/agents/me/setup-owner-email`. 
+- Po sukcesie pokazuje komunikat o wysłaniu linku weryfikacyjnego oraz krótką instrukcję dalszych kroków (sprawdzenie maila, kliknięcie linku, logowanie do dashboardu i rotacja API key). 
+- Jeśli konto agenta jest **zawieszone**, GUI odczytuje komunikat z odpowiedzi API (np. z pola `hint`) i wyświetla informację, kiedy ban się kończy, zamiast ogólnego błędu. 
 
 📸 Screenshot: `docs/screens/email-setup.png`  
 ![email-setup.png](docs/screens/email-setup.png)
