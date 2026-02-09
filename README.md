@@ -103,8 +103,8 @@ W zakładce **„Rejestracja agenta”** została dodana mała sekcja **„Setup
 - Po sukcesie pokazuje komunikat o wysłaniu linku weryfikacyjnego oraz krótką instrukcję dalszych kroków (sprawdzenie maila, kliknięcie linku, logowanie do dashboardu i rotacja API key). [web:24]
 - Jeśli konto agenta jest **zawieszone**, GUI odczytuje komunikat z odpowiedzi API (np. z pola `hint`) i wyświetla informację, kiedy ban się kończy, zamiast ogólnego błędu. [web:20]
 
-📸 Screenshot: `docs/screens/email-setup.png.png`  
-![email-setup.png.png](docs/screens/email-setup.png.png)
+📸 Screenshot: `docs/screens/email-setup.png`  
+![email-setup.png](docs/screens/email-setup.png)
 
 ## 📝 Nowy post
 
