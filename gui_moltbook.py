@@ -1,6 +1,7 @@
 import sys
 import json
 import webbrowser
+import subprocess
 from datetime import datetime, timedelta
 
 from PyQt6.QtCore import QTimer
@@ -32,40 +33,34 @@ import register_moltbook
 import vote_client
 import env_editor
 
-
 DEFAULT_SUBMOLT = "introductions"
 MOLTBOOK_BASE_URL = "https://www.moltbook.com"
 
 INFO_TEXT_PL = """### Informacje o Moltbook
-
-Moltbook to sieć społecznościowa zaprojektowana głównie dla agentów AI, ale ludzie też mogą z niej korzystać jako obserwatorzy. Posty są publikowane w submoltach (np. m/general, m/introductions) i mogą mieć komentarze oraz głosy.
+Moltbook to sieć społecznościowa zaprojektowana głównie dla agentów AI, ale ludzie też mogą z niej korzystać jako obserwatorzy.
+Posty są publikowane w submoltach (np. m/general, m/introductions) i mogą mieć komentarze oraz głosy.
 
 **Opóźnienia w pojawianiu się postów**
-
 - Post utworzony przez API może mieć status „pending”.
 - Dopóki trwa weryfikacja, post może nie być widoczny w głównym feedzie, mimo że API zwróciło sukces.
 - Najczęściej po pewnym czasie (minuty, czasem dłużej) post zaczyna być widoczny normalnie w submolcie i na profilu agenta.
 
 **Głosowanie (upvote/downvote)**
-
 - Interfejs webowy Moltbooka pozwala głosować (strzałki w górę/w dół) po zalogowaniu się przez X.com.
 - API dla zewnętrznych agentów jest opisane w plikach `skill.md` i `heartbeat.md` publikowanych przez Moltbook.
 - Ten klient GUI skupia się na postach i komentarzach – nie implementuje bezpośrednio głosowania, dopóki oficjalne endpointy vote nie będą stabilnie udokumentowane.
 
 **Agent API i heartbeat**
-
 - Rejestracja agenta odbywa się przez `POST /api/v1/agents/register`; w odpowiedzi dostajesz `api_key`, `claim_url`, `profile_url` i listę kroków (`setup`).
 - Claim URL służy do powiązania agenta z Twoim kontem (np. przez X.com).
 - Moltbook zaleca skonfigurowanie „heartbeat” – okresowego sprawdzania powiadomień / statusu agenta, zgodnie z instrukcją w `heartbeat.md`.
 
 **Gdzie szukać dokumentacji**
-
 - Dokumentacja dla agentów: `https://www.moltbook.com/skill.md`
 - Heartbeat: `https://www.moltbook.com/heartbeat.md`
 - Dodatkowe pliki opisujące zachowanie skilli mogą być wymienione w sekcji `skill_files` JSON‑a zwracanego przy rejestracji agenta.
 
 **Jak używać tego GUI**
-
 - Zakładka `.env` – edycja pliku `.env` i klucza `MOLTBOOK_API_KEY`.
 - „Rejestracja agenta” – tworzy nowego agenta i pokazuje wszystkie kroki setupu (łącznie z claim URL, profilami i plikami skill).
 - „Nowy post” – tworzenie postów w wybranym submolcie (do API wysyłana jest sama nazwa submoltu, np. `general` zamiast `m/general`).
@@ -76,35 +71,30 @@ W razie wątpliwości co do nowych funkcji Moltbooka, najlepiej porównać odpow
 """
 
 INFO_TEXT_EN = """### Moltbook information
-
-Moltbook is a social network designed mainly for AI agents, but humans can use it as viewers as well. Posts are published into submolts (for example m/general, m/introductions) and can receive comments and votes.
+Moltbook is a social network designed mainly for AI agents, but humans can use it as viewers as well.
+Posts are published into submolts (for example m/general, m/introductions) and can receive comments and votes.
 
 **Why posts sometimes appear with a delay**
-
 - A post created via the API can have a `pending` verification status.
 - While verification is in progress, the post may not show up in the main feed even if the API returned success.
 - Usually, after some time (minutes or longer) the post becomes visible in the target submolt and on the agent profile.
 
 **Voting (upvotes/downvotes)**
-
 - The Moltbook web UI lets you vote using the arrow buttons once you log in via X.com.
 - The API for external agents is documented in the `skill.md` and `heartbeat.md` files published by Moltbook.
 - This GUI focuses on posts and comments and does not implement direct voting until official vote endpoints are clearly documented and stable.
 
 **Agent API and heartbeat**
-
 - Agents are registered using `POST /api/v1/agents/register`; the response includes `api_key`, `claim_url`, `profile_url` and a `setup` section with next steps.
 - The claim URL is used to link the agent to your account (for example via X.com).
 - Moltbook recommends configuring a “heartbeat” – periodic checks of notifications / agent status, according to the instructions in `heartbeat.md`.
 
 **Where to find documentation**
-
 - Agent documentation: `https://www.moltbook.com/skill.md`
 - Heartbeat: `https://www.moltbook.com/heartbeat.md`
 - Additional files describing skill behaviour can be listed in the `skill_files` section of the JSON returned when registering an agent.
 
 **How to use this GUI**
-
 - “.env” tab – edit the `.env` file and the `MOLTBOOK_API_KEY` value.
 - “Agent registration” – create a new agent and see all setup steps (including claim URL, profile URLs and skill files).
 - “New post” – create posts in a chosen submolt (the API receives only the submolt name, for example `general` instead of `m/general`).
@@ -193,6 +183,18 @@ TRANSLATIONS = {
         "auto_btn_stop": "Zatrzymaj automatyczne posty",
         "auto_info_scheduled": "Zaplanowano automatyczne posty.\nIlość powtórzeń: {retries}\nCo {interval} minut.\nAplikacja będzie próbowała w tle.",
         "auto_info_stopped": "Wszystkie zaplanowane automatyczne posty zostały zatrzymane.",
+        # owner email / suspension
+        "owner_email_section_title": "Setup owner email (dla starszych agentów)",
+        "owner_email_section_desc": "Starsze konta agentów mogą dodać adres email właściciela, aby uzyskać dostęp do dashboardu Moltbook.",
+        "owner_email_label": "Adres email właściciela:",
+        "owner_email_btn_register": "Zarejestruj e-mail",
+        "owner_email_btn_dashboard": "Otwórz dashboard logowania",
+        "owner_email_success_title": "Link weryfikacyjny wysłany",
+        "owner_email_success_msg": "Na podany adres email wysłano link weryfikacyjny.\n\n1. Sprawdź skrzynkę (także spam).\n2. Kliknij link weryfikacyjny.\n3. Następnie kliknij „Otwórz dashboard logowania” i zaloguj się na Moltbook.\n4. W dashboardzie możesz zrotować klucz API dla swojego agenta.",
+        "owner_email_error_title": "Błąd rejestracji emaila",
+        "owner_email_suspended_title": "Konto zawieszone",
+        "owner_email_suspended_msg": "Twoje konto agenta jest obecnie zawieszone.\n\nKoniec bana: {until}\n\nSpróbuj ponownie później.",
+        "owner_email_invalid_msg": "Podaj poprawny adres email.",
     },
     "en": {
         "lang_name": "English",
@@ -272,6 +274,18 @@ TRANSLATIONS = {
         "auto_btn_stop": "Stop automatic posts",
         "auto_info_scheduled": "Automatic posts scheduled.\nRepeats: {retries}\nEvery {interval} minutes.\nThe application will keep trying in the background.",
         "auto_info_stopped": "All scheduled automatic posts have been stopped.",
+        # owner email / suspension
+        "owner_email_section_title": "Setup owner email (for older agents)",
+        "owner_email_section_desc": "Older agent accounts can add an owner email address to access the Moltbook dashboard.",
+        "owner_email_label": "Owner email address:",
+        "owner_email_btn_register": "Register email",
+        "owner_email_btn_dashboard": "Open login dashboard",
+        "owner_email_success_title": "Verification link sent",
+        "owner_email_success_msg": "A verification link has been sent to the provided email address.\n\n1. Check your inbox (including spam).\n2. Click the verification link.\n3. Then click “Open login dashboard” and sign in to Moltbook.\n4. In the dashboard you can rotate the API key for your agent.",
+        "owner_email_error_title": "Email registration error",
+        "owner_email_suspended_title": "Account suspended",
+        "owner_email_suspended_msg": "Your agent account is currently suspended.\n\nBan ends: {until}\n\nPlease try again later.",
+        "owner_email_invalid_msg": "Please enter a valid email address.",
     },
 }
 
@@ -282,7 +296,6 @@ def show_json_dialog(parent, text: str, tr: dict):
     dlg.resize(600, 350)
 
     layout = QVBoxLayout(dlg)
-
     editor = QTextEdit()
     editor.setReadOnly(True)
     editor.setPlainText(text)
@@ -317,7 +330,6 @@ def show_json_dialog(parent, text: str, tr: dict):
 
     layout.addWidget(editor)
     layout.addWidget(buttons)
-
     dlg.exec()
 
 
@@ -327,7 +339,6 @@ def show_text_dialog(parent, title: str, text: str):
     dlg.resize(600, 400)
 
     layout = QVBoxLayout(dlg)
-
     editor = QTextEdit()
     editor.setReadOnly(False)
     editor.setPlainText(text)
@@ -337,7 +348,6 @@ def show_text_dialog(parent, title: str, text: str):
 
     layout.addWidget(editor)
     layout.addWidget(buttons)
-
     dlg.exec()
 
 
@@ -345,6 +355,7 @@ class RegistrationStepsDialog(QDialog):
     def __init__(self, parent, data: dict, tr: dict):
         super().__init__(parent)
         self.tr = tr
+
         self.setWindowTitle(tr["register_steps_title"])
         self.resize(700, 500)
 
@@ -361,16 +372,16 @@ class RegistrationStepsDialog(QDialog):
             title = step.get("action") or key
             details = step.get("details") or ""
             why = step.get("why") or step.get("message_template") or ""
-
-            label = QLabel(f"⭐ <b>{title}</b><br>{details}")
+            label = QLabel(f"⭐ **{title}**  \n{details}")
             if why:
-                label.setText(label.text() + f"<br><i>{why}</i>")
+                label.setText(label.text() + f"  \n_{why}_")
             label.setWordWrap(True)
             layout.addWidget(label)
 
         agent = data.get("agent", {}) if isinstance(data, dict) else {}
         claim_url = data.get("claim_url") or agent.get("claim_url")
         profile_url = agent.get("profile_url")
+
         skill_files = data.get("skill_files", {}) if isinstance(data, dict) else {}
         heartbeat_url = skill_files.get("heartbeat_md") or skill_files.get("heartbeat_url")
         skill_url = skill_files.get("skill_md")
@@ -431,7 +442,7 @@ class RegistrationStepsDialog(QDialog):
             layout.addLayout(row)
 
         if tweet_template:
-            lbl = QLabel(f"{tr['register_steps_tweet_template']}<br><code>{tweet_template}</code>")
+            lbl = QLabel(f"{tr['register_steps_tweet_template']}  \n`{tweet_template}`")
             lbl.setWordWrap(True)
             layout.addWidget(lbl)
 
@@ -456,6 +467,7 @@ class RegistrationStepsDialog(QDialog):
 class MoldBookGUI(QWidget):
     def __init__(self):
         super().__init__()
+
         self.current_lang = "pl"
         self.tr = TRANSLATIONS[self.current_lang]
 
@@ -498,7 +510,6 @@ class MoldBookGUI(QWidget):
         self._init_info_tab()
 
         self._try_load_agent_profile()
-
         self.tabs.setCurrentWidget(self.info_tab)
 
     def change_language(self, index: int):
@@ -512,6 +523,7 @@ class MoldBookGUI(QWidget):
     def retranslate_ui(self):
         self.setWindowTitle(self.tr["window_title"])
         self.lang_label.setText(self.tr["label_lang"])
+
         self.tabs.setTabText(0, self.tr["tab_env"])
         self.tabs.setTabText(1, self.tr["tab_register"])
         self.tabs.setTabText(2, self.tr["tab_post"])
@@ -553,6 +565,13 @@ class MoldBookGUI(QWidget):
         self.comment_id_label.setText(self.tr["label_post_id"])
         self.comment_content_label.setText(self.tr["label_comment"])
         self.comment_button.setText(self.tr["btn_add_comment"])
+
+        # owner email section
+        self.owner_email_section_title.setText(self.tr["owner_email_section_title"])
+        self.owner_email_section_desc.setText(self.tr["owner_email_section_desc"])
+        self.owner_email_label.setText(self.tr["owner_email_label"])
+        self.owner_email_btn_register.setText(self.tr["owner_email_btn_register"])
+        self.owner_email_btn_dashboard.setText(self.tr["owner_email_btn_dashboard"])
 
         self.info_text.setPlainText(INFO_TEXT_PL if self.current_lang == "pl" else INFO_TEXT_EN)
 
@@ -623,7 +642,142 @@ class MoldBookGUI(QWidget):
         self.register_button.clicked.connect(self.register_agent)
         form.addRow(self.register_button)
 
+        # --- Setup owner email section (for older agents) ---
+        self.owner_email_section_title = QLabel(self.tr["owner_email_section_title"])
+        self.owner_email_section_title.setStyleSheet("font-weight: bold;")
+        self.owner_email_section_desc = QLabel(self.tr["owner_email_section_desc"])
+        self.owner_email_section_desc.setWordWrap(True)
+
+        form.addRow(self.owner_email_section_title)
+        form.addRow(self.owner_email_section_desc)
+
+        self.owner_email_label = QLabel(self.tr["owner_email_label"])
+        self.owner_email_input = QLineEdit()
+        form.addRow(self.owner_email_label, self.owner_email_input)
+
+        owner_buttons_layout = QHBoxLayout()
+        self.owner_email_btn_register = QPushButton(self.tr["owner_email_btn_register"])
+        self.owner_email_btn_dashboard = QPushButton(self.tr["owner_email_btn_dashboard"])
+        owner_buttons_layout.addWidget(self.owner_email_btn_register)
+        owner_buttons_layout.addWidget(self.owner_email_btn_dashboard)
+        form.addRow(owner_buttons_layout)
+
+        self.owner_email_btn_register.clicked.connect(self.setup_owner_email_via_script)
+        self.owner_email_btn_dashboard.clicked.connect(self.open_owner_dashboard)
+        # --- end owner email section ---
+
         self.tabs.addTab(tab, self.tr["tab_register"])
+
+    def _parse_suspension_message_from_body(self, body: str):
+        """
+        Próbujemy wyciągnąć informację o końcu bana z body.
+        Przykład body:
+
+        {"success":false,"error":"Account suspended","hint":"Your account is suspended: Posting duplicate posts (offense #1). Suspension ends in 3 hours."}
+        """
+        try:
+            data = json.loads(body)
+        except Exception:
+            return None
+
+        if not isinstance(data, dict):
+            return None
+
+        # 1) jeśli jest hint – pokazujemy go w całości
+        hint = data.get("hint")
+        if isinstance(hint, str) and hint.strip():
+            return hint.strip()
+
+        # 2) w przeciwnym razie próbujemy klasyczne suspension.until / until_at
+        suspension = data.get("suspension") or {}
+        if isinstance(suspension, dict):
+            until = suspension.get("until") or suspension.get("until_at")
+            if until:
+                return f"Suspension until: {until}"
+
+        return None
+
+    def setup_owner_email_via_script(self):
+        email = self.owner_email_input.text().strip()
+        if "@" not in email or "." not in email:
+            QMessageBox.warning(self, self.tr["owner_email_error_title"], self.tr["owner_email_invalid_msg"])
+            return
+
+        try:
+            # Odpalamy lokalny skrypt email_setup.py w tym samym katalogu.
+            # Założenie: email_setup.py przyjmuje email jako pierwszy argument:
+            # python email_setup.py you@example.com
+            proc = subprocess.run(
+                [sys.executable, "email_setup.py", email],
+                capture_output=True,
+                text=True,
+                timeout=60,
+            )
+        except Exception as e:
+            QMessageBox.critical(self, self.tr["owner_email_error_title"], str(e))
+            return
+
+        stdout = proc.stdout or ""
+        stderr = proc.stderr or ""
+        combined = stdout + ("\n" + stderr if stderr else "")
+
+        # W Twoim skrypcie:
+        # print("Status:", resp.status_code)
+        # print("Body:", resp.text)
+        status_code = None
+        body = ""
+        for line in stdout.splitlines():
+            if line.startswith("Status:"):
+                try:
+                    status_code = int(line.split("Status:", 1)[1].strip())
+                except Exception:
+                    pass
+            elif line.startswith("Body:"):
+                body = line.split("Body:", 1)[1].strip()
+            else:
+                if body:
+                    body += "\n" + line
+                else:
+                    body = line
+
+        if not body:
+            body = stdout.strip()
+
+        # Sukces 2xx
+        if status_code is not None and 200 <= status_code < 300:
+            self._handle_owner_email_success()
+            return
+
+        # Obsługa 401 / Account suspended
+        status_text = str(status_code) if status_code is not None else ""
+        lower_body = (body or "").lower()
+        if "401" in status_text or "401" in combined or "account suspended" in lower_body:
+            msg = self._parse_suspension_message_from_body(body) or "unknown"
+
+            QMessageBox.warning(
+                self,
+                self.tr["owner_email_suspended_title"],
+                self.tr["owner_email_suspended_msg"].format(until=msg),
+            )
+            return
+
+        # Inny błąd
+        error_text = combined.strip() or f"status={status_code}"
+        QMessageBox.critical(
+            self,
+            self.tr["owner_email_error_title"],
+            error_text,
+        )
+
+    def _handle_owner_email_success(self):
+        QMessageBox.information(
+            self,
+            self.tr["owner_email_success_title"],
+            self.tr["owner_email_success_msg"],
+        )
+
+    def open_owner_dashboard(self):
+        webbrowser.open(f"{MOLTBOOK_BASE_URL}/login")
 
     def register_agent(self):
         try:
@@ -637,7 +791,6 @@ class MoldBookGUI(QWidget):
                 name=name,
                 description=description,
             )
-
             pretty_json = json.dumps(data, indent=2, ensure_ascii=False)
 
             agent = data.get("agent", {}) if isinstance(data, dict) else {}
@@ -650,7 +803,6 @@ class MoldBookGUI(QWidget):
                     self.env_editor.setPlainText(env_editor.load_env())
                 except Exception:
                     pass
-
                 self._try_load_agent_profile()
 
                 dlg = RegistrationStepsDialog(self, data, self.tr)
@@ -675,7 +827,6 @@ class MoldBookGUI(QWidget):
                 self.tr["register_conflict_title"],
                 api_msg,
             )
-
         except Exception as e:
             QMessageBox.critical(self, self.tr["register_error"], str(e))
 
@@ -686,7 +837,6 @@ class MoldBookGUI(QWidget):
 
         self.post_submolt = QLineEdit()
         self.post_submolt.setText(DEFAULT_SUBMOLT)
-
         self.post_title = QLineEdit()
         self.post_content = QTextEdit()
 
@@ -748,6 +898,7 @@ class MoldBookGUI(QWidget):
             submolt = self.post_submolt.text().strip() or DEFAULT_SUBMOLT
             if submolt.startswith("m/"):
                 submolt = submolt[2:]
+
             title = self.post_title.text().strip()
             content = self.post_content.toPlainText().strip()
 
@@ -760,7 +911,6 @@ class MoldBookGUI(QWidget):
                     title=title,
                     content=content,
                 )
-
                 post_id = resp.get("id")
                 if not post_id:
                     show_text_dialog(
@@ -769,7 +919,6 @@ class MoldBookGUI(QWidget):
                         json.dumps(resp, indent=2, ensure_ascii=False),
                     )
                     return
-
                 post_url = moltbook_client.get_post_url(post_id)
                 msg = self.tr["post_success_msg"].format(id=post_id, url=post_url)
                 show_text_dialog(self, self.tr["post_success_title"], msg)
@@ -779,7 +928,6 @@ class MoldBookGUI(QWidget):
             # auto-post mode
             retries = int(self.post_auto_retries.value())
             interval_min = int(self.post_auto_interval.value())
-
             task = {
                 "submolt": submolt,
                 "title": title,
@@ -789,28 +937,23 @@ class MoldBookGUI(QWidget):
                 "next_run": datetime.utcnow(),
             }
             self.scheduled_posts.append(task)
-
             QMessageBox.information(
                 self,
                 self.tr["post_success_title"],
                 self.tr["auto_info_scheduled"].format(retries=retries, interval=interval_min),
             )
-
         except Exception as e:
             QMessageBox.critical(self, self.tr["post_error"], str(e))
 
     def _process_scheduled_posts(self):
         if not self.scheduled_posts:
             return
-
         now = datetime.utcnow()
         still_pending = []
-
         for task in self.scheduled_posts:
             if task["next_run"] > now:
                 still_pending.append(task)
                 continue
-
             try:
                 resp = moltbook_client.post_to_moltbook(
                     submolt=task["submolt"],
@@ -822,11 +965,9 @@ class MoldBookGUI(QWidget):
                 print(f"[auto-post] OK id={post_id} remaining={task['remaining']}")
             except Exception as e:
                 print(f"[auto-post] error: {e}")
-
             if task["remaining"] > 0:
                 task["next_run"] = now + timedelta(minutes=task["interval_min"])
                 still_pending.append(task)
-
         self.scheduled_posts = still_pending
 
     def _init_feed_tab(self):
@@ -837,6 +978,7 @@ class MoldBookGUI(QWidget):
         self.feed_sort_label = QLabel(self.tr["label_sort"])
         self.feed_sort = QComboBox()
         self.feed_sort.addItems(["hot", "new"])
+
         self.feed_limit_label = QLabel(self.tr["label_limit"])
         self.feed_limit = QLineEdit()
         self.feed_limit.setText("20")
@@ -853,6 +995,7 @@ class MoldBookGUI(QWidget):
 
         self.feed_posts_label = QLabel(self.tr["label_posts"])
         self.feed_list = QListWidget()
+
         self.feed_json_label = QLabel(self.tr["label_json_response"])
         self.feed_raw = QTextEdit()
         self.feed_raw.setReadOnly(True)
@@ -873,13 +1016,10 @@ class MoldBookGUI(QWidget):
             limit = int(self.feed_limit.text().strip() or "20")
 
             data = moltbook_client.list_posts(sort=sort, limit=limit)
-
             self.feed_raw.setPlainText(json.dumps(data, indent=2, ensure_ascii=False))
 
             posts = data.get("posts", []) if isinstance(data, dict) else data
-
             self.feed_list.clear()
-
             for post in posts:
                 if not isinstance(post, dict):
                     continue
@@ -906,6 +1046,7 @@ class MoldBookGUI(QWidget):
     def _init_post_details_tab(self):
         tab = QWidget()
         self.post_details_tab = tab
+
         layout = QVBoxLayout(tab)
 
         form = QFormLayout()
@@ -978,29 +1119,28 @@ class MoldBookGUI(QWidget):
                 raise ValueError(self.tr["common_missing_post_id_or_content"])
 
             resp = vote_client.add_comment(post_id=post_id, content=content)
-            post_url = moltbook_client.get_post_url(post_id)
+            _ = resp
 
+            post_url = moltbook_client.get_post_url(post_id)
             msg = self.tr["comment_success"].format(
                 post_id=post_id,
                 url=post_url,
             )
             show_text_dialog(self, self.tr["comment_success_title"], msg)
             self._copy_or_open_url(post_url, "copy_or_open_title_comment")
-
         except Exception as e:
             QMessageBox.critical(self, self.tr["comment_error"], str(e))
 
     def _init_info_tab(self):
         tab = QWidget()
         self.info_tab = tab
-        layout = QVBoxLayout(tab)
 
+        layout = QVBoxLayout(tab)
         self.info_text = QTextEdit()
         self.info_text.setReadOnly(False)
         self.info_text.setPlainText(INFO_TEXT_PL if self.current_lang == "pl" else INFO_TEXT_EN)
 
         layout.addWidget(self.info_text)
-
         self.tabs.addTab(tab, self.tr["tab_info"])
 
 
