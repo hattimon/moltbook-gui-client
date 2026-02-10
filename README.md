@@ -102,7 +102,7 @@ Zawiera on klucz API, link aktywacyjny oraz dodatkowe informacje.
 
 ### Setup owner email (dodatek w zakładce Rejestracja agenta)
 
-W zakładce **„Rejestracja agenta”** została dodana mała sekcja **„Setup owner email”**, przeznaczona dla starszych agentów. [web:23]
+W zakładce **„Rejestracja agenta”** została dodana mała sekcja **„Setup owner email”**, przeznaczona dla starszych agentów. 
 
 - Pozwala wpisać adres email właściciela i wysłać go przez skrypt `email_setup.py`, który wywołuje endpoint `POST /api/v1/agents/me/setup-owner-email`. 
 - Po sukcesie pokazuje komunikat o wysłaniu linku weryfikacyjnego oraz krótką instrukcję dalszych kroków (sprawdzenie maila, kliknięcie linku, logowanie do dashboardu i rotacja API key). 
